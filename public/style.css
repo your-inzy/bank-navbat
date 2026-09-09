@@ -420,7 +420,8 @@ body.kiosk {
    ========================================================================== */
 
 body.tv {
-  background: #081a33;
+  /* Davr Bank palette: blue flowing into green, like the logo */
+  background: linear-gradient(140deg, #072c4d 0%, #063a2a 100%);
   color: #fff;
   height: 100vh;
   overflow: hidden;
@@ -481,36 +482,37 @@ body.tv {
   display: flex;
   flex-direction: column;
   min-height: 0;
-  gap: 16px;
+  gap: 12px;
 }
 .now-serving > h2 {
   font-size: 1.3rem;
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  opacity: 0.85;
+  color: #74dfa0;
   margin: 0;
 }
 
 .headline {
-  background: linear-gradient(150deg, #0d3f7d, #1257a8);
+  background: linear-gradient(120deg, #12599e 0%, #16786a 52%, #1c8f4c 100%);
   border-radius: 18px;
-  padding: 20px 26px;
+  padding: clamp(12px, 2vh, 22px) 26px;
   text-align: center;
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  flex-shrink: 0;
 }
 .headline.flash {
   animation: flash 0.9s ease 0s 5 alternate;
 }
 @keyframes flash {
   from {
-    box-shadow: 0 0 0 0 rgba(245, 197, 66, 0);
+    box-shadow: 0 0 0 0 rgba(69, 214, 122, 0);
   }
   to {
-    box-shadow: 0 0 0 8px rgba(245, 197, 66, 0.55);
+    box-shadow: 0 0 0 8px rgba(69, 214, 122, 0.6);
   }
 }
 .headline .row1 {
-  font-size: 5.2rem;
+  font-size: clamp(3rem, 6.5vh, 5.2rem);
   font-weight: 800;
   line-height: 1;
   letter-spacing: 0.03em;
@@ -521,17 +523,21 @@ body.tv {
   flex-wrap: wrap;
 }
 .headline .arrow {
-  opacity: 0.6;
+  opacity: 0.55;
   font-weight: 400;
 }
+.headline .code {
+  color: #63e58c; /* Davr green — pops over the blue side of the panel */
+}
 .headline .op {
-  color: #ffd24a;
+  color: #fff; /* white reads cleanly over the green side */
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
 }
 .headline .row2 {
-  font-size: 1.5rem;
+  font-size: clamp(1.05rem, 2vh, 1.5rem);
   font-weight: 600;
   margin-top: 8px;
-  opacity: 0.9;
+  opacity: 0.92;
 }
 .headline .row3 {
   font-size: 1.05rem;
@@ -545,17 +551,20 @@ body.tv {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   grid-auto-rows: 1fr;
-  gap: 12px;
+  gap: 10px;
   min-height: 0;
+  overflow: hidden;
 }
 .op-cell {
   background: rgba(255, 255, 255, 0.07);
   border: 1px solid rgba(255, 255, 255, 0.09);
   border-radius: 14px;
-  padding: 14px 18px;
+  padding: clamp(8px, 1.4vh, 16px) 18px;
   display: flex;
   flex-direction: column;
   justify-content: center;
+  min-height: 0;
+  overflow: hidden;
 }
 .op-cell.idle {
   opacity: 0.42;
@@ -564,8 +573,13 @@ body.tv {
   opacity: 0.5;
 }
 .op-cell.just-called {
-  background: #ffd24a;
-  color: #08182f;
+  background: linear-gradient(120deg, #1c7fd0 0%, #22a24f 100%);
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.35);
+}
+.op-cell.just-called .op-name,
+.op-cell.just-called .op-svc {
+  opacity: 1;
 }
 .op-cell .op-name {
   font-size: 1.15rem;
@@ -581,10 +595,17 @@ body.tv {
   opacity: 0.75;
 }
 .op-cell .op-code {
-  font-size: 3rem;
+  font-size: clamp(1.9rem, 3.4vh, 3rem);
   font-weight: 800;
   font-variant-numeric: tabular-nums;
-  line-height: 1.1;
+  line-height: 1.15;
+  color: #6fe6a0;
+}
+.op-cell.idle .op-code {
+  color: #fff;
+}
+.op-cell.just-called .op-code {
+  color: #fff;
 }
 .op-cell .op-svc {
   font-size: 1rem;
@@ -614,7 +635,7 @@ body.tv {
   font-size: 1.3rem;
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  opacity: 0.85;
+  color: #74dfa0;
   margin: 0 0 14px;
 }
 .waiting-list {
