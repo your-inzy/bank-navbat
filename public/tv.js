@@ -25,26 +25,32 @@
     $('soundToggle').textContent = soundOn ? '🔊 Ovoz: yoniq' : '🔇 Ovoz: oʻchiq';
   }
 
-  // ---- Announcement voice picker ----
+  // ---- Announcement voice (Madina only) ----
   function buildVoiceList() {
     var sel = $('voiceSelect');
-    var voices = Navbat.listVoices();
-    // keep the "auto" option, replace the rest
-    sel.length = 1;
-    voices.forEach(function (v) {
-      var o = document.createElement('option');
-      o.value = v.voiceURI;
-      o.textContent = v.name + ' (' + v.lang + ')';
-      sel.appendChild(o);
+    var madinas = Navbat.listVoices().filter(function (v) {
+      return /madina/i.test(v.name || '');
     });
-    // show what "automatic" currently resolves to (e.g. Madina in Edge)
-    var auto = Navbat.pickVoice('');
-    sel.options[0].textContent = auto ? 'Avtomatik — ' + auto.name : 'Ovoz: avtomatik';
-    // restore saved choice if still available
-    sel.value = voiceURI;
-    if (sel.value !== voiceURI) {
-      voiceURI = '';
-      sel.value = '';
+    sel.length = 0;
+
+    if (madinas.length) {
+      madinas.forEach(function (v) {
+        var o = document.createElement('option');
+        o.value = v.voiceURI;
+        o.textContent = 'Madina (' + v.lang + ')';
+        sel.appendChild(o);
+      });
+      voiceURI = madinas[0].voiceURI;
+      sel.value = voiceURI;
+      sel.disabled = false;
+      localStorage.setItem('tvVoiceURI', voiceURI);
+    } else {
+      var o = document.createElement('option');
+      o.value = '';
+      o.textContent = 'Madina ovozi yoʻq — Edge brauzerida oching';
+      sel.appendChild(o);
+      sel.disabled = true;
+      voiceURI = ''; // speak() falls back so it is never silent
     }
   }
   buildVoiceList();

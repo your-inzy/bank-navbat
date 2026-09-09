@@ -209,9 +209,10 @@ window.Navbat = (function () {
 
   // --- Speech synthesis -------------------------------------------------------
 
-  // Named voices to grab first when "automatic" is selected. Microsoft Madina /
-  // Sardor are the uz-UZ online neural voices available in Microsoft Edge.
-  const VOICE_NAME_PREF = [/madina/i, /sardor/i];
+  // Named voice to grab first: Microsoft Madina, the uz-UZ online neural voice
+  // available in Microsoft Edge. Everything below is only a safety net so the
+  // announcement is never silent if Madina is missing (e.g. opened in Chrome).
+  const VOICE_NAME_PREF = [/madina/i];
 
   // Languages whose voices pronounce Uzbek (Latin) acceptably, best first.
   // Turkic languages (tr / az / kk …) share the sound system and Latin
