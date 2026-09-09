@@ -566,6 +566,24 @@ function buildView() {
   };
 }
 
+// The view is identical between mutations, so build + serialize it once and
+// hand the same string to every poller and SSE client. This keeps hundreds of
+// concurrent /api/state polls and SSE writes cheap (a buffer copy, no work).
+let viewJsonCache = null;
+let ssePayloadCache = null;
+function invalidateView() {
+  viewJsonCache = null;
+  ssePayloadCache = null;
+}
+function viewJson() {
+  if (viewJsonCache === null) viewJsonCache = JSON.stringify(buildView());
+  return viewJsonCache;
+}
+function ssePayload() {
+  if (ssePayloadCache === null) ssePayloadCache = `event: state\ndata: ${viewJson()}\n\n`;
+  return ssePayloadCache;
+}
+
 // ---------------------------------------------------------------------------
 // Server-Sent Events
 // ---------------------------------------------------------------------------
@@ -581,16 +599,19 @@ function sseHandler(req, res) {
     'X-Accel-Buffering': 'no',
   });
   res.write('retry: 3000\n\n');
-  res.write(`event: state\ndata: ${JSON.stringify(buildView())}\n\n`);
+  res.write(ssePayload());
 
   sseClients.add(res);
+  // A real (observable) heartbeat: keeps the connection warm through proxies
+  // AND lets the client tell a working stream from a silently-buffered one,
+  // so it can back its polling right off when SSE is healthy.
   const heartbeat = setInterval(() => {
     try {
-      res.write(': ping\n\n');
+      res.write('event: ping\ndata: 1\n\n');
     } catch {
       /* ignore */
     }
-  }, 20000);
+  }, 15000);
 
   req.on('close', () => {
     clearInterval(heartbeat);
@@ -599,7 +620,7 @@ function sseHandler(req, res) {
 }
 
 function broadcast() {
-  const payload = `event: state\ndata: ${JSON.stringify(buildView())}\n\n`;
+  const payload = ssePayload();
   for (const res of sseClients) {
     try {
       res.write(payload);
@@ -611,6 +632,7 @@ function broadcast() {
 
 /** Called after every mutation. */
 function commit() {
+  invalidateView();
   broadcast();
   persist();
 }
@@ -799,7 +821,13 @@ const server = http.createServer(async (req, res) => {
 
   try {
     if (req.method === 'GET' && pathname === '/events') return sseHandler(req, res);
-    if (req.method === 'GET' && pathname === '/api/state') return sendJson(res, 200, buildView());
+    if (req.method === 'GET' && pathname === '/api/state') {
+      res.writeHead(200, {
+        'Content-Type': 'application/json; charset=utf-8',
+        'Cache-Control': 'no-cache',
+      });
+      return res.end(viewJson());
+    }
     if (req.method === 'GET' && pathname === '/api/qr') {
       return sendJson(res, 200, {
         ok: true,

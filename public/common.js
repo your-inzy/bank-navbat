@@ -23,7 +23,12 @@ window.Navbat = (function () {
     let alive = null;
     let lastJson = '';
     let lastOkAt = 0;
-    const POLL_MS = 2500;
+    let lastSseAt = 0; // last time the SSE stream actually delivered something
+    let stopped = false;
+
+    const POLL_FAST_MS = 2500; // SSE dead / buffered — polling carries the load
+    const POLL_SLOW_MS = 20000; // SSE healthy — poll is just a safety net
+    const SSE_HEALTHY_MS = 26000; // no state/ping within this => treat SSE as down
     const OFFLINE_AFTER_MS = 7000;
 
     function setConn(v) {
@@ -49,7 +54,7 @@ window.Navbat = (function () {
       if (Date.now() - lastOkAt > OFFLINE_AFTER_MS) setConn(false);
     }
 
-    // --- Transport 1: SSE (best effort) ---
+    // --- Transport 1: SSE (primary when it works) ---
     function openSSE() {
       let es;
       try {
@@ -58,7 +63,11 @@ window.Navbat = (function () {
         return;
       }
       es.addEventListener('state', function (e) {
+        lastSseAt = Date.now();
         apply(e.data);
+      });
+      es.addEventListener('ping', function () {
+        lastSseAt = Date.now();
       });
       es.addEventListener('error', function () {
         markMaybeOffline();
@@ -67,7 +76,10 @@ window.Navbat = (function () {
     }
     openSSE();
 
-    // --- Transport 2: polling backbone ---
+    // --- Transport 2: adaptive polling backbone ---
+    // Polls fast until SSE proves itself, then backs off to a slow safety net.
+    // Keeps hundreds of concurrent clients cheap when SSE is healthy, while
+    // still guaranteeing <=2.5s updates through proxies that buffer SSE.
     async function poll() {
       try {
         const r = await fetch('/api/state', { cache: 'no-store' });
@@ -77,12 +89,23 @@ window.Navbat = (function () {
         markMaybeOffline();
       }
     }
-    poll();
-    const pollTimer = setInterval(poll, POLL_MS);
+
+    function loop() {
+      if (stopped) return;
+      const sseHealthy = Date.now() - lastSseAt < SSE_HEALTHY_MS;
+      setTimeout(
+        function () {
+          if (stopped) return;
+          poll().then(loop);
+        },
+        sseHealthy ? POLL_SLOW_MS : POLL_FAST_MS
+      );
+    }
+    poll().then(loop);
 
     return {
       close: function () {
-        clearInterval(pollTimer);
+        stopped = true;
       },
     };
   }
