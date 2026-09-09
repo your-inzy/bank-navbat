@@ -14,7 +14,13 @@
           <img class="brand-logo" src="/img/logo.jpg" alt="Davr Bank" /> Davr Bank navbat tizimi
         </div>
         <div class="right">
-          <button class="sound-toggle" id="soundToggle">🔊 Ovoz: yoniq</button>
+          <div class="voice-controls">
+            <button class="sound-toggle" id="soundToggle">🔊 Ovoz: yoniq</button>
+            <select class="voice-select" id="voiceSelect" title="Eʼlon ovozi">
+              <option value="">Ovoz: avtomatik</option>
+            </select>
+            <button class="sound-toggle" id="voiceTest" title="Ovozni sinash">🔈 Sinash</button>
+          </div>
           <div>
             <div class="clock tabnum" id="clock">00:00:00</div>
             <div class="date" id="date">—</div>

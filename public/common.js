@@ -207,18 +207,77 @@ window.Navbat = (function () {
     }
   }
 
-  /** Ovozli e'lon (imkoni bo'lsa o'zbekcha). */
-  function speak(text) {
+  // --- Speech synthesis -------------------------------------------------------
+
+  // Languages whose voices pronounce Uzbek (Latin) acceptably, best first.
+  // Turkic languages (tr / az / kk …) share the sound system and Latin
+  // orthography, so they read Uzbek far better than ru/en fallbacks.
+  const VOICE_LANG_PREF = ['uz', 'tr', 'az', 'kk', 'ky', 'tk', 'ru', 'en'];
+
+  let voiceCache = [];
+  function refreshVoices() {
+    try {
+      voiceCache = window.speechSynthesis.getVoices() || [];
+    } catch (e) {
+      voiceCache = [];
+    }
+    return voiceCache;
+  }
+  if ('speechSynthesis' in window) {
+    refreshVoices();
+    try {
+      window.speechSynthesis.addEventListener('voiceschanged', refreshVoices);
+    } catch (e) {
+      /* older engines */
+    }
+  }
+
+  function langRank(v) {
+    const l = (v.lang || '').toLowerCase().slice(0, 2);
+    const i = VOICE_LANG_PREF.indexOf(l);
+    return i === -1 ? 99 : i;
+  }
+
+  /** All installed voices, Turkic/Uzbek-friendly ones first. */
+  function listVoices() {
+    return refreshVoices()
+      .slice()
+      .sort((a, b) => langRank(a) - langRank(b) || (a.name < b.name ? -1 : 1));
+  }
+
+  function pickVoice(preferred) {
+    const vs = refreshVoices();
+    if (!vs.length) return null;
+    if (preferred) {
+      const hit = vs.find((v) => v.voiceURI === preferred || v.name === preferred);
+      if (hit) return hit;
+    }
+    for (const code of VOICE_LANG_PREF) {
+      const hit = vs.find((v) => (v.lang || '').toLowerCase().slice(0, 2) === code);
+      if (hit) return hit;
+    }
+    return vs[0] || null;
+  }
+
+  /**
+   * Speak a phrase.
+   * @param {string} text
+   * @param {{voiceURI?: string, rate?: number, pitch?: number}} [opts]
+   */
+  function speak(text, opts) {
     try {
       if (!('speechSynthesis' in window)) return;
+      opts = opts || {};
       const u = new SpeechSynthesisUtterance(text);
-      const voices = window.speechSynthesis.getVoices();
-      const uz = voices.find((v) => /uz/i.test(v.lang));
-      const ru = voices.find((v) => /ru/i.test(v.lang));
-      u.voice = uz || ru || null;
-      u.lang = (uz && uz.lang) || (ru && ru.lang) || 'uz-UZ';
-      u.rate = 0.92;
-      u.pitch = 1;
+      const v = pickVoice(opts.voiceURI);
+      if (v) {
+        u.voice = v;
+        u.lang = v.lang;
+      } else {
+        u.lang = 'uz-UZ';
+      }
+      u.rate = opts.rate || 0.9;
+      u.pitch = opts.pitch == null ? 1 : opts.pitch;
       window.speechSynthesis.cancel();
       window.speechSynthesis.speak(u);
     } catch (e) {
@@ -238,5 +297,7 @@ window.Navbat = (function () {
     elapsed: elapsed,
     chime: chime,
     speak: speak,
+    listVoices: listVoices,
+    pickVoice: pickVoice,
   };
 })();

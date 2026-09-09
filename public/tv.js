@@ -10,6 +10,7 @@
   };
 
   var soundOn = localStorage.getItem('tvSound') !== 'off';
+  var voiceURI = localStorage.getItem('tvVoiceURI') || '';
   var lastSeq = null;
   var initialised = false;
 
@@ -22,6 +23,53 @@
   });
   function updateSoundBtn() {
     $('soundToggle').textContent = soundOn ? '🔊 Ovoz: yoniq' : '🔇 Ovoz: oʻchiq';
+  }
+
+  // ---- Announcement voice picker ----
+  function buildVoiceList() {
+    var sel = $('voiceSelect');
+    var voices = Navbat.listVoices();
+    // keep the "auto" option, replace the rest
+    sel.length = 1;
+    voices.forEach(function (v) {
+      var o = document.createElement('option');
+      o.value = v.voiceURI;
+      o.textContent = v.name + ' (' + v.lang + ')';
+      sel.appendChild(o);
+    });
+    // restore saved choice if still available
+    sel.value = voiceURI;
+    if (sel.value !== voiceURI) {
+      voiceURI = '';
+      sel.value = '';
+    }
+  }
+  buildVoiceList();
+  if ('speechSynthesis' in window) {
+    try {
+      window.speechSynthesis.addEventListener('voiceschanged', buildVoiceList);
+    } catch (e) {
+      /* ignore */
+    }
+  }
+  // Voices often load a beat after page load.
+  setTimeout(buildVoiceList, 400);
+  setTimeout(buildVoiceList, 1500);
+
+  $('voiceSelect').addEventListener('change', function () {
+    voiceURI = this.value;
+    localStorage.setItem('tvVoiceURI', voiceURI);
+    sampleSpeak();
+  });
+  $('voiceTest').addEventListener('click', sampleSpeak);
+
+  function sampleSpeak() {
+    Navbat.chime();
+    setTimeout(function () {
+      Navbat.speak('Navbat raqami A 100. Uch raqamli operatorga murojaat qiling.', {
+        voiceURI: voiceURI,
+      });
+    }, 700);
   }
 
   // ---- Clock ----
@@ -38,9 +86,13 @@
     if (soundOn) {
       Navbat.chime();
       var text =
-        call.code + ' raqami, ' + call.operatorId + '-operatorga murojaat qiling.';
+        'Navbat raqami ' +
+        call.code +
+        '. ' +
+        call.operatorId +
+        '-operatorga murojaat qiling.';
       setTimeout(function () {
-        Navbat.speak(text);
+        Navbat.speak(text, { voiceURI: voiceURI });
       }, 950);
     }
     var hl = $('headline');
