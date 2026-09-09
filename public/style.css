@@ -73,6 +73,31 @@ a {
   letter-spacing: 0.02em;
 }
 
+/* Brand logo — shown in a white rounded tile so it reads on any background */
+.brand-lockup {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+.brand-lockup h1 {
+  margin: 0;
+}
+.brand-logo {
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  object-fit: contain;
+  background: #fff;
+  padding: 3px;
+  flex-shrink: 0;
+  box-shadow: 0 1px 3px rgba(15, 45, 82, 0.18);
+}
+.brand-logo.lg {
+  width: 46px;
+  height: 46px;
+  border-radius: 10px;
+}
+
 .offline-banner {
   position: fixed;
   left: 0;
@@ -224,6 +249,14 @@ body.kiosk {
   font-variant-numeric: tabular-nums;
 }
 
+.k-illus {
+  display: block;
+  width: 76px;
+  height: 76px;
+  object-fit: contain;
+  margin: 4px 0 10px;
+  border-radius: 12px;
+}
 .k-title {
   font-size: 1.5rem;
   margin-bottom: 4px;
