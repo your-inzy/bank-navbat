@@ -36,7 +36,7 @@ const DATA_FILE = path.join(__dirname, 'data', 'state.json');
 
 const OPERATOR_COUNT = 6;
 
-// The five service types. Each has an independent, daily-incrementing queue.
+// The service types. Each has an independent, daily-incrementing queue.
 const DEFAULT_SERVICES = [
   {
     id: 'kreditlash',
@@ -77,6 +77,14 @@ const DEFAULT_SERVICES = [
     prefix: 'E',
     icon: '👥',
     color: '#db2777',
+  },
+  {
+    id: 'escrow',
+    name: 'Escrow xizmati',
+    subtitle: 'Uy 🏠 va avtomashina 🚗 oldi-sotdi bitimlari',
+    prefix: 'F',
+    icon: '🤝',
+    color: '#7c3aed',
   },
 ];
 
