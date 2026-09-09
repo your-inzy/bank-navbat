@@ -857,8 +857,13 @@ body.staff {
 .s2-who {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   min-width: 0;
+}
+.s2-who .brand-logo {
+  width: 38px;
+  height: 38px;
+  flex: none;
 }
 .s2-opbadge {
   width: 48px;
