@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="uz">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Navbat ekrani — Bank</title>
+    <link rel="stylesheet" href="/style.css" />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ctext y='26' font-size='26'%3E%F0%9F%93%BA%3C/text%3E%3C/svg%3E"
+    />
+  </head>
+  <body class="tv">
+    <div class="tv-wrap">
+      <header class="tv-head">
+        <div class="title">🏦 Bank navbat tizimi</div>
+        <div class="right">
+          <button class="sound-toggle" id="soundToggle">🔊 Ovoz: yoniq</button>
+          <div>
+            <div class="clock tabnum" id="clock">00:00:00</div>
+            <div class="date" id="date">—</div>
+          </div>
+        </div>
+      </header>
+
+      <div class="tv-body">
+        <section class="now-serving">
+          <h2>Hozir xizmat koʻrsatilmoqda</h2>
+
+          <div class="headline" id="headline">
+            <div class="row1">
+              <span class="code tabnum" id="hlCode">—</span>
+              <span class="arrow">→</span>
+              <span class="op" id="hlOp">—</span>
+            </div>
+            <div class="row2" id="hlGoto">Navbat kutilmoqda</div>
+            <div class="row3" id="hlNote"></div>
+          </div>
+
+          <div class="op-grid" id="opGrid"></div>
+        </section>
+
+        <aside class="waiting-panel">
+          <h2>Navbatdagilar</h2>
+          <div class="waiting-list" id="waitingList"></div>
+          <div class="legend" id="legend"></div>
+        </aside>
+      </div>
+
+      <footer class="tv-foot">
+        <div>Bugun berilgan: <b id="stIssued">0</b></div>
+        <div>Xizmat koʻrsatilgan: <b id="stServed">0</b></div>
+        <div>Navbatda kutayotganlar: <b id="stWaiting">0</b></div>
+        <div>Oʻrtacha xizmat: <b id="stAvg">0</b> daq.</div>
+      </footer>
+    </div>
+
+    <div class="offline-banner" id="offline">Server bilan aloqa uzildi — qayta ulanmoqda…</div>
+
+    <script src="/common.js"></script>
+    <script src="/tv.js"></script>
+  </body>
+</html>

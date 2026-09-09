@@ -1,0 +1,15 @@
+# Render Blueprint — deploy this repo as a free web service.
+# https://render.com  ->  New  ->  Blueprint  ->  pick this repo.
+services:
+  - type: web
+    name: bank-navbat
+    runtime: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    autoDeploy: true
+    envVars:
+      - key: NODE_VERSION
+        value: "20"
+    # PUBLIC_URL is not needed: the server falls back to RENDER_EXTERNAL_URL,
+    # which Render sets automatically, so the QR code points at the live site.

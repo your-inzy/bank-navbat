@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="uz">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Operator paneli — Bank</title>
+    <link rel="stylesheet" href="/style.css" />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ctext y='26' font-size='24'%3E%F0%9F%91%A4%3C/text%3E%3C/svg%3E"
+    />
+  </head>
+  <body class="staff">
+    <div class="staff-wrap">
+      <!-- Operatorni tanlash -->
+      <section class="op-pick" id="opPick">
+        <h1>Operator raqamini tanlang</h1>
+        <p style="color: var(--muted)">Ushbu ish oʻrni qaysi operatorga tegishli?</p>
+        <div class="grid" id="opGrid"></div>
+      </section>
+
+      <!-- Asosiy panel -->
+      <section id="panel" hidden>
+        <div class="staff-head">
+          <h1 id="opTitle">—</h1>
+          <div class="right">
+            <button class="status-toggle online" id="statusToggle">Onlayn</button>
+            <button class="link-btn" id="switchOp">Operatorni almashtirish</button>
+          </div>
+        </div>
+
+        <div class="staff-grid">
+          <div>
+            <div class="card">
+              <h2>Hozir xizmat koʻrsatilmoqda</h2>
+              <div class="current-box" id="currentBox">
+                <div class="empty">Navbat boʻsh</div>
+              </div>
+              <div class="next-line">
+                Navbatdagi keyingi: <b id="nextCode">—</b>
+                <span id="nextSvc" style="color: var(--muted)"></span>
+              </div>
+
+              <div class="action-row">
+                <button class="btn-call" id="btnCall">Keyingisini chaqirish</button>
+                <div class="secondary-row">
+                  <button class="btn-recall" id="btnRecall">Qayta chaqirish</button>
+                  <button class="btn-skip" id="btnSkip">Oʻtkazib yuborish</button>
+                </div>
+              </div>
+              <div class="hint">
+                «Keyingisini chaqirish» — eng uzoq kutgan mijozni oladi.
+                Aniq navbatni tanlash uchun quyidagilardan foydalaning. Tezkor tugma: Space.
+              </div>
+            </div>
+
+            <div class="card">
+              <h2>Muayyan navbatdan chaqirish</h2>
+              <div class="pull-queues" id="pullQueues"></div>
+            </div>
+
+            <div class="card">
+              <h2>Bugungi koʻrsatkichlar</h2>
+              <div class="stats-row">
+                <div class="s"><div class="v" id="sIssued">0</div><div class="k">Berilgan</div></div>
+                <div class="s"><div class="v" id="sServed">0</div><div class="k">Xizmat koʻrsatilgan</div></div>
+                <div class="s"><div class="v" id="sNoShow">0</div><div class="k">Oʻtkazib yuborilgan</div></div>
+                <div class="s"><div class="v" id="sAvg">0</div><div class="k">Oʻrtacha (daq.)</div></div>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <div class="card">
+              <h2>Navbatda kutayotganlar</h2>
+              <div class="wait-breakdown" id="waitBreakdown"></div>
+            </div>
+
+            <div class="card">
+              <h2>Men xizmat koʻrsatadigan turlar</h2>
+              <div class="svc-checks" id="svcChecks"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <div class="toast" id="toast"></div>
+    <div class="offline-banner" id="offline">Server bilan aloqa uzildi — qayta ulanmoqda…</div>
+
+    <script src="/common.js"></script>
+    <script src="/staff.js"></script>
+  </body>
+</html>

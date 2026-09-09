@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="uz">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>QR plakat — Bank navbat</title>
+    <link rel="stylesheet" href="/style.css" />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ctext y='26' font-size='26'%3E%F0%9F%93%B1%3C/text%3E%3C/svg%3E"
+    />
+  </head>
+  <body class="qr">
+    <div class="qr-poster">
+      <a class="back-link" href="/">← Bosh sahifa</a>
+      <div class="bank">🏦 Bank navbat tizimi</div>
+      <h1>Navbat olish</h1>
+      <p>Telefoningiz kamerasi bilan QR kodni skanerlang</p>
+
+      <div class="qbox">
+        <img id="qrImg" alt="Kioskka olib boradigan QR kod" hidden />
+        <span id="qrLoading" style="color: var(--muted)">QR kod tayyorlanmoqda…</span>
+      </div>
+
+      <div class="url" id="qrUrl">…</div>
+
+      <ol class="steps">
+        <li>Telefon kamerasini oching</li>
+        <li>QR kodga qarating</li>
+        <li>Chiqqan havolani bosing</li>
+        <li>Kerakli xizmat turini tanlang</li>
+        <li>Navbat raqamingizni oling</li>
+      </ol>
+
+      <button class="print-btn" onclick="window.print()">Chop etish</button>
+    </div>
+
+    <script src="/common.js"></script>
+    <script src="/qr.js"></script>
+  </body>
+</html>

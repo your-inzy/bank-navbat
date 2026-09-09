@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="uz">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <meta name="theme-color" content="#0f2d52" />
+    <title>Navbat olish — Bank</title>
+    <link rel="stylesheet" href="/style.css" />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ctext y='26' font-size='26'%3E%F0%9F%8E%AB%3C/text%3E%3C/svg%3E"
+    />
+  </head>
+  <body class="kiosk">
+    <div class="k-wrap">
+      <div class="k-head">
+        <div class="k-brand">🏦 Bank navbat</div>
+        <div class="k-clock" id="clock">00:00</div>
+      </div>
+
+      <!-- 1-ekran: xizmat turini tanlash -->
+      <section id="screen-select">
+        <h1 class="k-title">Xizmat turini tanlang</h1>
+        <p class="k-sub">Kerakli xizmatni tanlang — navbat raqamingiz darhol beriladi.</p>
+        <div class="svc-cards" id="serviceCards"></div>
+      </section>
+
+      <!-- 2-ekran: chipta -->
+      <section id="screen-ticket" hidden>
+        <div class="ticket" id="ticketCard">
+          <div class="t-svc" id="tSvc"><span id="tSvcIcon">•</span> <span id="tSvcName">—</span></div>
+
+          <div class="t-lbl">Sizning raqamingiz</div>
+          <div class="t-code tabnum" id="tCode">—</div>
+
+          <div id="tCalled" class="t-called" hidden></div>
+
+          <div id="tActive">
+            <div class="t-rows">
+              <div class="box">
+                <div class="v tabnum" id="tPos">1</div>
+                <div class="k">Navbatdagi oʻrningiz</div>
+              </div>
+              <div class="box">
+                <div class="v" id="tWait">—</div>
+                <div class="k">Taxminiy kutish vaqti</div>
+              </div>
+            </div>
+            <div class="t-people" id="tPeople">Bu xizmatda navbatda kutayotganlar: 0</div>
+          </div>
+
+          <div class="t-hint">Ushbu sahifani yopmang — raqamingiz shu yerda yangilanib turadi.</div>
+          <button class="btn-block ghost" id="btnNew">Yangi navbat olish</button>
+        </div>
+      </section>
+    </div>
+
+    <div class="offline-banner" id="offline">Server bilan aloqa uzildi — qayta ulanmoqda…</div>
+
+    <script src="/common.js"></script>
+    <script src="/kiosk.js"></script>
+  </body>
+</html>

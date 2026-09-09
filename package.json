@@ -1,0 +1,17 @@
+{
+  "name": "bank-navbat",
+  "version": "1.0.0",
+  "description": "Bank navbat (raqam olish) tizimi — mijoz kioski, televizor ekrani va operator paneli. Uchala qism real vaqtda sinxron.",
+  "type": "commonjs",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "private": true,
+  "dependencies": {
+    "qrcode": "^1.5.4"
+  }
+}
