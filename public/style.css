@@ -1052,7 +1052,9 @@ body.qr {
   align-items: center;
   justify-content: center;
   padding: 32px 20px;
-  background: var(--bg);
+  /* Davr Bank blue -> green, like the logo and the TV screen */
+  background: #0f3f7a;
+  background: linear-gradient(140deg, #14589c 0%, #1a7a5a 55%, #2f9e42 100%);
 }
 .qr-poster {
   background: #fff;
