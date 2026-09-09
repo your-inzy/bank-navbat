@@ -801,9 +801,6 @@ body.staff {
 }
 
 /* --- Main panel: one focused column --- */
-.s2-accent {
-  display: none;
-}
 .s2-head {
   display: flex;
   align-items: center;
@@ -815,15 +812,42 @@ body.staff {
 .s2-who {
   display: flex;
   align-items: center;
-  gap: 10px;
-  font-size: 1.3rem;
-  font-weight: 800;
+  gap: 12px;
   min-width: 0;
+}
+.s2-opbadge {
+  width: 48px;
+  height: 48px;
+  flex: none;
+  background: var(--navy);
+  color: #fff;
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  font-size: 1.7rem;
+  font-weight: 800;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+.s2-opwrap {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.25;
+  min-width: 0;
+}
+.s2-opwrap b {
+  font-size: 1.2rem;
+  font-weight: 800;
   color: #fff;
 }
-.s2-who .brand-logo {
-  width: 34px;
-  height: 34px;
+.s2-change {
+  align-self: flex-start;
+  background: none;
+  padding: 0;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 2px;
 }
 .s2-status {
   padding: 9px 16px;
@@ -1053,17 +1077,6 @@ body.staff {
   flex: none;
 }
 
-.s2-switch {
-  display: block;
-  width: 100%;
-  margin-top: 18px;
-  background: transparent;
-  color: rgba(255, 255, 255, 0.85);
-  text-decoration: underline;
-  text-underline-offset: 3px;
-  padding: 10px;
-  font-weight: 600;
-}
 .s2-hint {
   text-align: center;
   color: rgba(255, 255, 255, 0.78);

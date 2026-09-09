@@ -43,6 +43,7 @@
     localStorage.setItem('operatorId', String(n));
     $('opPick').hidden = true;
     $('panel').hidden = false;
+    $('opBadge').textContent = String(n);
     $('opTitle').textContent = n + '-operator';
     Navbat.post('/api/operator', { operatorId: n, online: true }).catch(function () {});
     if (lastView) render(lastView);

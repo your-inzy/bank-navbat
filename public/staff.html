@@ -19,12 +19,13 @@
 
       <!-- Asosiy panel -->
       <section id="panel" hidden>
-        <div class="s2-accent"></div>
-
         <div class="s2-head">
           <div class="s2-who">
-            <img class="brand-logo" src="/img/logo.jpg" alt="Davr Bank" />
-            <span id="opTitle">—</span>
+            <span class="s2-opbadge tabnum" id="opBadge">—</span>
+            <span class="s2-opwrap">
+              <b id="opTitle">operator</b>
+              <button class="s2-change" id="switchOp">Almashtirish</button>
+            </span>
           </div>
           <button class="s2-status online" id="statusToggle">● Onlayn</button>
         </div>
@@ -68,8 +69,6 @@
           </summary>
           <div class="s2-checks" id="svcChecks"></div>
         </details>
-
-        <button class="s2-switch" id="switchOp">Operatorni almashtirish</button>
       </section>
     </div>
 
