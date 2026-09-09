@@ -13,76 +13,63 @@
       <section class="op-pick" id="opPick">
         <img class="brand-logo lg" src="/img/logo.jpg" alt="Davr Bank" style="margin-bottom: 14px" />
         <h1>Operator raqamini tanlang</h1>
-        <p style="color: var(--muted)">Ushbu ish oʻrni qaysi operatorga tegishli?</p>
+        <p>Ushbu ish oʻrni qaysi operatorga tegishli?</p>
         <div class="grid" id="opGrid"></div>
       </section>
 
       <!-- Asosiy panel -->
       <section id="panel" hidden>
-        <div class="staff-head">
-          <div class="brand-lockup">
+        <div class="s2-accent"></div>
+
+        <div class="s2-head">
+          <div class="s2-who">
             <img class="brand-logo" src="/img/logo.jpg" alt="Davr Bank" />
-            <h1 id="opTitle">—</h1>
+            <span id="opTitle">—</span>
           </div>
-          <div class="right">
-            <button class="status-toggle online" id="statusToggle">Onlayn</button>
-            <button class="link-btn" id="switchOp">Operatorni almashtirish</button>
+          <button class="s2-status online" id="statusToggle">● Onlayn</button>
+        </div>
+
+        <!-- Hozir xizmat koʻrsatilmoqda -->
+        <div class="s2-now">
+          <div class="s2-now-label">Hozir xizmat koʻrsatilmoqda</div>
+          <div class="s2-now-empty" id="nowEmpty">Navbat boʻsh</div>
+          <div id="nowActive" hidden>
+            <div class="s2-code tabnum" id="nowCode">—</div>
+            <div class="s2-svc" id="nowSvc"><span id="nowIcon"></span> <span id="nowName"></span></div>
+            <div class="s2-timer tabnum" id="nowTimer">0:00</div>
           </div>
         </div>
 
-        <div class="staff-grid">
-          <div>
-            <div class="card">
-              <h2>Hozir xizmat koʻrsatilmoqda</h2>
-              <div class="current-box" id="currentBox">
-                <div class="empty">Navbat boʻsh</div>
-              </div>
-              <div class="next-line">
-                Navbatdagi keyingi: <b id="nextCode">—</b>
-                <span id="nextSvc" style="color: var(--muted)"></span>
-              </div>
-
-              <div class="action-row">
-                <button class="btn-call" id="btnCall">Keyingisini chaqirish</button>
-                <div class="secondary-row">
-                  <button class="btn-recall" id="btnRecall">Qayta chaqirish</button>
-                  <button class="btn-skip" id="btnSkip">Oʻtkazib yuborish</button>
-                </div>
-              </div>
-              <div class="hint">
-                «Keyingisini chaqirish» — eng uzoq kutgan mijozni oladi.
-                Aniq navbatni tanlash uchun quyidagilardan foydalaning. Tezkor tugma: Space.
-              </div>
-            </div>
-
-            <div class="card">
-              <h2>Muayyan navbatdan chaqirish</h2>
-              <div class="pull-queues" id="pullQueues"></div>
-            </div>
-
-            <div class="card">
-              <h2>Bugungi koʻrsatkichlar</h2>
-              <div class="stats-row">
-                <div class="s"><div class="v" id="sIssued">0</div><div class="k">Berilgan</div></div>
-                <div class="s"><div class="v" id="sServed">0</div><div class="k">Xizmat koʻrsatilgan</div></div>
-                <div class="s"><div class="v" id="sNoShow">0</div><div class="k">Oʻtkazib yuborilgan</div></div>
-                <div class="s"><div class="v" id="sAvg">0</div><div class="k">Oʻrtacha (daq.)</div></div>
-              </div>
-            </div>
-          </div>
-
-          <div>
-            <div class="card">
-              <h2>Navbatda kutayotganlar</h2>
-              <div class="wait-breakdown" id="waitBreakdown"></div>
-            </div>
-
-            <div class="card">
-              <h2>Men xizmat koʻrsatadigan turlar</h2>
-              <div class="svc-checks" id="svcChecks"></div>
-            </div>
-          </div>
+        <!-- Asosiy amal -->
+        <button class="s2-call" id="btnCall">
+          <span class="s2-call-main">Keyingisini chaqirish</span>
+          <span class="s2-call-sub" id="callSub">Navbat kutilmoqda</span>
+        </button>
+        <div class="s2-secondary">
+          <button class="s2-btn recall" id="btnRecall">Qayta chaqirish</button>
+          <button class="s2-btn skip" id="btnSkip">Oʻtkazib yuborish</button>
         </div>
+        <div class="s2-hint">Tezkor tugma: «Bo'sh joy» (Space) — keyingisini chaqirish</div>
+
+        <!-- Navbatda kutayotganlar (+ muayyan navbatdan chaqirish) -->
+        <details class="s2-drop" id="waitDrop">
+          <summary>
+            <span class="s2-sum-left">Navbatda kutayotganlar</span>
+            <span class="s2-drop-n tabnum" id="waitTotal">0</span>
+          </summary>
+          <div class="s2-queues" id="queues"></div>
+        </details>
+
+        <!-- Xizmat turlari (sozlash) -->
+        <details class="s2-drop" id="svcDrop">
+          <summary>
+            <span class="s2-sum-left">Xizmat turlarim</span>
+            <span class="s2-drop-hint" id="svcSummary">Hammasi</span>
+          </summary>
+          <div class="s2-checks" id="svcChecks"></div>
+        </details>
+
+        <button class="s2-switch" id="switchOp">Operatorni almashtirish</button>
       </section>
     </div>
 

@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Staff panel (one per operator)
+   Staff panel (one per operator) — single-column, action-first layout
    ========================================================================== */
 
 (function () {
@@ -10,7 +10,13 @@
   };
 
   var OPERATOR_COUNT = 6;
-  var opId = Number(localStorage.getItem('operatorId')) || null;
+  // Deep link: /staff?operator=3 fixes this station to operator 3 (handy for
+  // kiosk-mode bookmarks on each operator's machine).
+  var urlOp = Number(new URLSearchParams(location.search).get('operator'));
+  var opId =
+    urlOp >= 1 && urlOp <= OPERATOR_COUNT
+      ? urlOp
+      : Number(localStorage.getItem('operatorId')) || null;
   var lastView = null;
   var calledAtTs = null;
   var timerInt = null;
@@ -37,7 +43,7 @@
     localStorage.setItem('operatorId', String(n));
     $('opPick').hidden = true;
     $('panel').hidden = false;
-    $('opTitle').textContent = n + '-operator paneli';
+    $('opTitle').textContent = n + '-operator';
     Navbat.post('/api/operator', { operatorId: n, online: true }).catch(function () {});
     if (lastView) render(lastView);
   }
@@ -88,8 +94,7 @@
   $('statusToggle').addEventListener('click', function () {
     if (!opId || !lastView) return;
     var me = myOp(lastView);
-    var next = !(me && me.online);
-    Navbat.post('/api/operator', { operatorId: opId, online: next }).catch(function (err) {
+    Navbat.post('/api/operator', { operatorId: opId, online: !(me && me.online) }).catch(function (err) {
       toast('Xatolik: ' + err.message);
     });
   });
@@ -98,7 +103,7 @@
   document.addEventListener('keydown', function (e) {
     if (e.code !== 'Space') return;
     var tag = (e.target.tagName || '').toLowerCase();
-    if (tag === 'input' || tag === 'textarea' || tag === 'button') return;
+    if (tag === 'input' || tag === 'textarea' || tag === 'button' || tag === 'summary') return;
     e.preventDefault();
     action('/api/call-next');
   });
@@ -107,7 +112,7 @@
     $('btnCall').disabled = v;
     $('btnRecall').disabled = v;
     $('btnSkip').disabled = v;
-    $('pullQueues')
+    $('queues')
       .querySelectorAll('button')
       .forEach(function (b) {
         b.disabled = v;
@@ -120,32 +125,36 @@
     });
   }
 
-  // ---- Per-queue pull buttons ----
-  function buildPullQueues(view) {
-    var box = $('pullQueues');
+  // ---- "Navbatda kutayotganlar" rows (also: call from a specific queue) ----
+  function buildQueues(view) {
+    var box = $('queues');
     box.innerHTML = '';
     view.services.forEach(function (s) {
-      var btn = document.createElement('button');
-      btn.className = 'pull-btn';
-      btn.innerHTML =
-        '<span class="pb-name">' +
+      var row = document.createElement('div');
+      row.className = 's2-qrow';
+      row.innerHTML =
+        '<span class="dot" style="background:' +
+        s.color +
+        '"></span>' +
+        '<span class="s2-qname">' +
         s.icon +
         ' ' +
         s.name +
-        '</span><span class="pb-count">' +
+        '</span>' +
+        '<span class="s2-qn tabnum">' +
         s.waiting +
-        ' <small>' +
-        (s.waiting === 1 ? 'kishi' : 'kishi') +
-        '</small></span>';
+        '</span>' +
+        '<button class="s2-qcall">Chaqirish</button>';
+      var btn = row.querySelector('button');
       btn.disabled = busy || s.waiting === 0;
       btn.addEventListener('click', function () {
         action('/api/call-next', { serviceId: s.id });
       });
-      box.appendChild(btn);
+      box.appendChild(row);
     });
   }
 
-  // ---- Service checkboxes ----
+  // ---- Service-type checkboxes (setup) ----
   function buildSvcChecks(view) {
     var box = $('svcChecks');
     if (box.children.length !== view.services.length) {
@@ -167,10 +176,10 @@
     var me = myOp(view);
     var mine = me ? me.serviceIds : [];
     box.querySelectorAll('input').forEach(function (inp) {
-      if (document.activeElement !== inp) {
-        inp.checked = mine.indexOf(inp.value) !== -1;
-      }
+      if (document.activeElement !== inp) inp.checked = mine.indexOf(inp.value) !== -1;
     });
+    $('svcSummary').textContent =
+      mine.length >= view.services.length ? 'Hammasi' : mine.length + ' ta';
   }
 
   function onSvcChange() {
@@ -197,83 +206,56 @@
     var me = myOp(view);
     if (!me) return;
 
-    // Status toggle
+    // status pill
     var st = $('statusToggle');
     if (me.online) {
-      st.textContent = 'Onlayn';
-      st.className = 'status-toggle online';
+      st.textContent = '● Onlayn';
+      st.className = 's2-status online';
     } else {
-      st.textContent = 'Operator dam olishda';
-      st.className = 'status-toggle paused';
+      st.textContent = '● Tanaffusda';
+      st.className = 's2-status paused';
     }
 
-    // Current ticket
-    var box = $('currentBox');
+    // now serving
     if (me.current) {
       calledAtTs = me.current.calledAt;
-      box.innerHTML =
-        '<div class="svc-pill" style="color:' +
-        me.current.serviceColor +
-        '">' +
-        me.current.serviceIcon +
-        ' ' +
-        me.current.serviceName +
-        '</div>' +
-        '<div class="code tabnum">' +
-        me.current.code +
-        '</div>' +
-        '<div class="timer" id="curTimer">0:00</div>';
+      $('nowEmpty').hidden = true;
+      $('nowActive').hidden = false;
+      $('nowCode').textContent = me.current.code;
+      $('nowIcon').textContent = me.current.serviceIcon;
+      $('nowName').textContent = me.current.serviceName;
+      $('nowSvc').style.color = me.current.serviceColor;
       startTimer();
     } else {
       calledAtTs = null;
       stopTimer();
-      box.innerHTML = '<div class="empty">Navbat boʻsh</div>';
+      $('nowEmpty').hidden = false;
+      $('nowActive').hidden = true;
     }
 
-    // Next
-    $('nextCode').textContent = me.next ? me.next.code : '—';
-    $('nextSvc').textContent = me.next ? ' · ' + me.next.serviceIcon + ' ' + me.next.serviceName : '';
+    // primary button subtitle
+    if (me.next) {
+      $('callSub').textContent =
+        'Keyingisi: ' + me.next.code + ' · ' + me.next.serviceIcon + ' ' + me.next.serviceName;
+    } else {
+      $('callSub').textContent = 'Navbat kutilmoqda';
+    }
 
-    // Buttons
+    // button states
     if (!busy) {
       $('btnCall').disabled = false;
       $('btnRecall').disabled = !me.current;
       $('btnSkip').disabled = !me.current;
     }
 
-    buildPullQueues(view);
-    buildSvcChecks(view);
-
-    // Waiting breakdown
-    var wb = $('waitBreakdown');
-    wb.innerHTML = '';
+    // waiting total + per-queue rows
     var total = 0;
     view.services.forEach(function (s) {
       total += s.waiting;
-      var row = document.createElement('div');
-      row.className = 'wb-row';
-      row.innerHTML =
-        '<span class="wb-name"><span class="dot" style="background:' +
-        s.color +
-        '"></span>' +
-        s.icon +
-        ' ' +
-        s.name +
-        '</span><span class="wb-n tabnum">' +
-        s.waiting +
-        '</span>';
-      wb.appendChild(row);
     });
-    var totalRow = document.createElement('div');
-    totalRow.className = 'wb-total';
-    totalRow.innerHTML = '<span>Jami</span><span class="tabnum">' + total + '</span>';
-    wb.appendChild(totalRow);
-
-    // Stats
-    $('sIssued').textContent = view.stats.issued;
-    $('sServed').textContent = view.stats.served;
-    $('sNoShow').textContent = view.stats.noShow;
-    $('sAvg').textContent = view.stats.avgServiceMin;
+    $('waitTotal').textContent = total;
+    buildQueues(view);
+    buildSvcChecks(view);
   }
 
   function startTimer() {
@@ -286,7 +268,7 @@
     timerInt = null;
   }
   function updateTimer() {
-    var el = $('curTimer');
+    var el = $('nowTimer');
     if (el && calledAtTs) el.textContent = Navbat.elapsed(calledAtTs);
   }
 
