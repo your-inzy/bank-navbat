@@ -441,32 +441,38 @@ body.tv {
   padding-bottom: 10px;
 }
 .tv-head .title {
-  font-size: 1.6rem;
+  font-size: 2.4rem;
   font-weight: 800;
   display: flex;
-  gap: 10px;
+  gap: 14px;
   align-items: center;
+}
+.tv-head .title .brand-logo {
+  width: 60px;
+  height: 60px;
+  border-radius: 13px;
+  padding: 5px;
 }
 .tv-head .right {
   display: flex;
   align-items: center;
-  gap: 18px;
+  gap: 22px;
 }
 .tv-head .clock {
-  font-size: 1.5rem;
+  font-size: 2.1rem;
   font-variant-numeric: tabular-nums;
   text-align: right;
 }
 .tv-head .date {
-  font-size: 1rem;
-  opacity: 0.7;
+  font-size: 1.25rem;
+  opacity: 0.72;
   text-align: right;
 }
 .sound-toggle {
   background: rgba(255, 255, 255, 0.12);
   color: #fff;
-  padding: 10px 14px;
-  font-size: 0.95rem;
+  padding: 12px 18px;
+  font-size: 1.1rem;
   font-weight: 600;
   border-radius: 10px;
 }
@@ -485,7 +491,7 @@ body.tv {
   gap: 12px;
 }
 .now-serving > h2 {
-  font-size: 1.3rem;
+  font-size: 1.7rem;
   text-transform: uppercase;
   letter-spacing: 0.06em;
   color: #74dfa0;
@@ -512,14 +518,14 @@ body.tv {
   }
 }
 .headline .row1 {
-  font-size: clamp(3rem, 6.5vh, 5.2rem);
+  font-size: clamp(3.4rem, 8vh, 7rem);
   font-weight: 800;
   line-height: 1;
   letter-spacing: 0.03em;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 22px;
+  gap: 26px;
   flex-wrap: wrap;
 }
 .headline .arrow {
@@ -534,14 +540,14 @@ body.tv {
   text-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
 }
 .headline .row2 {
-  font-size: clamp(1.05rem, 2vh, 1.5rem);
+  font-size: clamp(1.3rem, 2.6vh, 2rem);
   font-weight: 600;
-  margin-top: 8px;
+  margin-top: 10px;
   opacity: 0.92;
 }
 .headline .row3 {
-  font-size: 1.05rem;
-  opacity: 0.7;
+  font-size: clamp(1.1rem, 1.7vh, 1.4rem);
+  opacity: 0.72;
   margin-top: 4px;
   min-height: 1.3em;
 }
@@ -582,7 +588,7 @@ body.tv {
   opacity: 1;
 }
 .op-cell .op-name {
-  font-size: 1.15rem;
+  font-size: 1.45rem;
   font-weight: 700;
   opacity: 0.85;
   display: flex;
@@ -590,12 +596,12 @@ body.tv {
   align-items: baseline;
 }
 .op-cell .op-name small {
-  font-size: 0.8rem;
+  font-size: 0.95rem;
   font-weight: 600;
   opacity: 0.75;
 }
 .op-cell .op-code {
-  font-size: clamp(1.9rem, 3.4vh, 3rem);
+  font-size: clamp(2.3rem, 4.4vh, 3.8rem);
   font-weight: 800;
   font-variant-numeric: tabular-nums;
   line-height: 1.15;
@@ -608,7 +614,7 @@ body.tv {
   color: #fff;
 }
 .op-cell .op-svc {
-  font-size: 1rem;
+  font-size: 1.2rem;
   opacity: 0.85;
   display: flex;
   align-items: center;
@@ -632,11 +638,11 @@ body.tv {
   min-height: 0;
 }
 .waiting-panel h2 {
-  font-size: 1.3rem;
+  font-size: 1.7rem;
   text-transform: uppercase;
   letter-spacing: 0.06em;
   color: #74dfa0;
-  margin: 0 0 14px;
+  margin: 0 0 16px;
 }
 .waiting-list {
   display: flex;
@@ -653,17 +659,17 @@ body.tv {
   padding: 12px 16px;
 }
 .wait-item .wi-code {
-  font-size: 2rem;
+  font-size: 2.6rem;
   font-weight: 800;
   font-variant-numeric: tabular-nums;
 }
 .wait-item .wi-svc {
-  font-size: 1rem;
+  font-size: 1.2rem;
   opacity: 0.82;
 }
 .wait-empty {
   opacity: 0.5;
-  font-size: 1.1rem;
+  font-size: 1.3rem;
 }
 
 .legend {
@@ -672,7 +678,7 @@ body.tv {
   gap: 12px 18px;
   margin-top: auto;
   padding-top: 16px;
-  font-size: 0.9rem;
+  font-size: 1.05rem;
   opacity: 0.85;
 }
 .legend span {
@@ -681,8 +687,8 @@ body.tv {
   gap: 6px;
 }
 .legend i {
-  width: 12px;
-  height: 12px;
+  width: 14px;
+  height: 14px;
   border-radius: 3px;
   display: inline-block;
 }
@@ -691,13 +697,13 @@ body.tv {
   display: flex;
   justify-content: space-between;
   border-top: 2px solid rgba(255, 255, 255, 0.12);
-  padding-top: 10px;
-  font-size: 1rem;
+  padding-top: 12px;
+  font-size: 1.2rem;
   opacity: 0.8;
 }
 .tv-foot b {
   color: #fff;
-  font-size: 1.25rem;
+  font-size: 1.5rem;
 }
 
 @media (max-width: 1150px) {
@@ -705,10 +711,10 @@ body.tv {
     grid-template-columns: 1fr;
   }
   .headline .row1 {
-    font-size: 3.6rem;
+    font-size: 4.2rem;
   }
   .op-cell .op-code {
-    font-size: 2.3rem;
+    font-size: 2.7rem;
   }
 }
 
