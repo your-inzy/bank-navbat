@@ -37,6 +37,9 @@
       o.textContent = v.name + ' (' + v.lang + ')';
       sel.appendChild(o);
     });
+    // show what "automatic" currently resolves to (e.g. Madina in Edge)
+    var auto = Navbat.pickVoice('');
+    sel.options[0].textContent = auto ? 'Avtomatik — ' + auto.name : 'Ovoz: avtomatik';
     // restore saved choice if still available
     sel.value = voiceURI;
     if (sel.value !== voiceURI) {

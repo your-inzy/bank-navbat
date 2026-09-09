@@ -209,6 +209,10 @@ window.Navbat = (function () {
 
   // --- Speech synthesis -------------------------------------------------------
 
+  // Named voices to grab first when "automatic" is selected. Microsoft Madina /
+  // Sardor are the uz-UZ online neural voices available in Microsoft Edge.
+  const VOICE_NAME_PREF = [/madina/i, /sardor/i];
+
   // Languages whose voices pronounce Uzbek (Latin) acceptably, best first.
   // Turkic languages (tr / az / kk …) share the sound system and Latin
   // orthography, so they read Uzbek far better than ru/en fallbacks.
@@ -252,6 +256,12 @@ window.Navbat = (function () {
       const hit = vs.find((v) => v.voiceURI === preferred || v.name === preferred);
       if (hit) return hit;
     }
+    // "Automatic": Microsoft Madina / Sardor (uz-UZ) if present …
+    for (const rx of VOICE_NAME_PREF) {
+      const hit = vs.find((v) => rx.test(v.name || ''));
+      if (hit) return hit;
+    }
+    // … otherwise the best available language match.
     for (const code of VOICE_LANG_PREF) {
       const hit = vs.find((v) => (v.lang || '').toLowerCase().slice(0, 2) === code);
       if (hit) return hit;
