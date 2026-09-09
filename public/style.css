@@ -749,7 +749,10 @@ body.tv {
 
 body.staff {
   min-height: 100vh;
-  background: var(--bg);
+  /* Davr Bank blue -> green, matching the kiosk, admin, QR poster and TV */
+  background: #0f3f7a;
+  background: linear-gradient(150deg, #14589c 0%, #1a7a5a 55%, #2f9e42 100%);
+  background-attachment: fixed;
 }
 .staff-wrap {
   max-width: 560px;
@@ -768,9 +771,10 @@ body.staff {
 }
 .op-pick h1 {
   font-size: 1.7rem;
+  color: #fff;
 }
 .op-pick p {
-  color: var(--muted);
+  color: rgba(255, 255, 255, 0.82);
   margin: 4px 0 0;
 }
 .op-pick .grid {
@@ -798,10 +802,7 @@ body.staff {
 
 /* --- Main panel: one focused column --- */
 .s2-accent {
-  height: 4px;
-  border-radius: 2px;
-  background: linear-gradient(90deg, var(--blue), var(--green));
-  margin-bottom: 16px;
+  display: none;
 }
 .s2-head {
   display: flex;
@@ -809,6 +810,7 @@ body.staff {
   justify-content: space-between;
   gap: 10px;
   margin-bottom: 16px;
+  padding-top: 6px;
 }
 .s2-who {
   display: flex;
@@ -817,6 +819,7 @@ body.staff {
   font-size: 1.3rem;
   font-weight: 800;
   min-width: 0;
+  color: #fff;
 }
 .s2-who .brand-logo {
   width: 34px;
@@ -1055,7 +1058,7 @@ body.staff {
   width: 100%;
   margin-top: 18px;
   background: transparent;
-  color: var(--muted);
+  color: rgba(255, 255, 255, 0.85);
   text-decoration: underline;
   text-underline-offset: 3px;
   padding: 10px;
@@ -1063,7 +1066,7 @@ body.staff {
 }
 .s2-hint {
   text-align: center;
-  color: var(--muted);
+  color: rgba(255, 255, 255, 0.78);
   font-size: 0.8rem;
   margin-top: 12px;
 }
