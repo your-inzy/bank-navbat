@@ -430,6 +430,36 @@ body.kiosk {
   margin-top: 10px;
 }
 
+/* Branch / contact footer on the kiosk */
+.k-info {
+  margin-top: 30px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.25);
+  text-align: center;
+  color: #fff;
+}
+.k-info .ib-branch {
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+.k-info .ib-addr {
+  font-size: 0.78rem;
+  opacity: 0.82;
+  margin: 5px 0 8px;
+  line-height: 1.5;
+}
+.k-info .ib-contacts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 14px;
+  justify-content: center;
+  font-size: 0.82rem;
+  opacity: 0.92;
+}
+.k-info .ib-contacts b {
+  font-weight: 800;
+}
+
 /* ==========================================================================
    TV display
    ========================================================================== */
@@ -725,15 +755,27 @@ body.tv {
 
 .tv-foot {
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
+  gap: 6px;
   border-top: 2px solid rgba(255, 255, 255, 0.12);
   padding-top: 12px;
+}
+.tvf-stats {
+  display: flex;
+  justify-content: space-between;
   font-size: 1.2rem;
   opacity: 0.8;
 }
-.tv-foot b {
+.tvf-stats b {
   color: #fff;
   font-size: 1.5rem;
+}
+.tvf-branch {
+  font-size: 0.95rem;
+  opacity: 0.55;
+}
+.tvf-branch b {
+  opacity: 1;
 }
 
 @media (max-width: 1150px) {
@@ -1216,6 +1258,33 @@ body.qr {
   color: var(--ink);
   font-size: 0.95rem;
   line-height: 1.6;
+}
+.qr-poster .info-block {
+  margin-top: 24px;
+  padding-top: 18px;
+  border-top: 1px solid var(--line);
+}
+.info-block .ib-branch {
+  font-weight: 700;
+  color: var(--navy);
+  font-size: 0.95rem;
+}
+.info-block .ib-addr {
+  color: var(--muted);
+  font-size: 0.84rem;
+  margin: 6px 0 10px;
+  line-height: 1.55;
+}
+.info-block .ib-contacts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  justify-content: center;
+  font-size: 0.9rem;
+  color: var(--ink);
+}
+.info-block .ib-contacts b {
+  color: var(--navy);
 }
 .qr-poster .print-btn {
   margin-top: 22px;
