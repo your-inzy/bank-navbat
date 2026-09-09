@@ -785,6 +785,26 @@ body.staff {
   padding: 18px 16px 48px;
 }
 
+/* Body: single column on a phone, two columns side by side on a wider screen */
+.s2-body,
+.s2-main,
+.s2-side {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+@media (min-width: 820px) {
+  .staff-wrap {
+    max-width: 980px;
+  }
+  .s2-body {
+    display: grid;
+    grid-template-columns: 1.35fr 1fr;
+    gap: 20px;
+    align-items: start;
+  }
+}
+
 /* --- Operator picker --- */
 .op-pick {
   min-height: 88vh;

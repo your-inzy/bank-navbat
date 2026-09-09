@@ -30,46 +30,52 @@
           <button class="s2-status online" id="statusToggle">● Onlayn</button>
         </div>
 
-        <!-- Hozir xizmat koʻrsatilmoqda -->
-        <div class="s2-now">
-          <div class="s2-now-label">Hozir xizmat koʻrsatilmoqda</div>
-          <div class="s2-now-empty" id="nowEmpty">Navbat boʻsh</div>
-          <div id="nowActive" hidden>
-            <div class="s2-code tabnum" id="nowCode">—</div>
-            <div class="s2-svc" id="nowSvc"><span id="nowIcon"></span> <span id="nowName"></span></div>
-            <div class="s2-timer tabnum" id="nowTimer">0:00</div>
-            <button class="s2-cancel" id="btnCancel">✕ Chiptani bekor qilish</button>
+        <div class="s2-body">
+          <div class="s2-main">
+            <!-- Hozir xizmat koʻrsatilmoqda -->
+            <div class="s2-now">
+              <div class="s2-now-label">Hozir xizmat koʻrsatilmoqda</div>
+              <div class="s2-now-empty" id="nowEmpty">Navbat boʻsh</div>
+              <div id="nowActive" hidden>
+                <div class="s2-code tabnum" id="nowCode">—</div>
+                <div class="s2-svc" id="nowSvc"><span id="nowIcon"></span> <span id="nowName"></span></div>
+                <div class="s2-timer tabnum" id="nowTimer">0:00</div>
+                <button class="s2-cancel" id="btnCancel">✕ Chiptani bekor qilish</button>
+              </div>
+            </div>
+
+            <!-- Asosiy amal -->
+            <button class="s2-call" id="btnCall">
+              <span class="s2-call-main">Keyingisini chaqirish</span>
+              <span class="s2-call-sub" id="callSub">Navbat kutilmoqda</span>
+            </button>
+            <div class="s2-secondary">
+              <button class="s2-btn recall" id="btnRecall">Qayta chaqirish</button>
+              <button class="s2-btn skip" id="btnSkip">Oʻtkazib yuborish</button>
+            </div>
+            <div class="s2-hint">Tezkor tugma: «Bo'sh joy» (Space) — keyingisini chaqirish</div>
+          </div>
+
+          <div class="s2-side">
+            <!-- Navbatda kutayotganlar (+ muayyan navbatdan chaqirish) -->
+            <details class="s2-drop" id="waitDrop" open>
+              <summary>
+                <span class="s2-sum-left">Navbatda kutayotganlar</span>
+                <span class="s2-drop-n tabnum" id="waitTotal">0</span>
+              </summary>
+              <div class="s2-queues" id="queues"></div>
+            </details>
+
+            <!-- Xizmat turlari (sozlash) -->
+            <details class="s2-drop" id="svcDrop">
+              <summary>
+                <span class="s2-sum-left">Xizmat turlarim</span>
+                <span class="s2-drop-hint" id="svcSummary">Hammasi</span>
+              </summary>
+              <div class="s2-checks" id="svcChecks"></div>
+            </details>
           </div>
         </div>
-
-        <!-- Asosiy amal -->
-        <button class="s2-call" id="btnCall">
-          <span class="s2-call-main">Keyingisini chaqirish</span>
-          <span class="s2-call-sub" id="callSub">Navbat kutilmoqda</span>
-        </button>
-        <div class="s2-secondary">
-          <button class="s2-btn recall" id="btnRecall">Qayta chaqirish</button>
-          <button class="s2-btn skip" id="btnSkip">Oʻtkazib yuborish</button>
-        </div>
-        <div class="s2-hint">Tezkor tugma: «Bo'sh joy» (Space) — keyingisini chaqirish</div>
-
-        <!-- Navbatda kutayotganlar (+ muayyan navbatdan chaqirish) -->
-        <details class="s2-drop" id="waitDrop">
-          <summary>
-            <span class="s2-sum-left">Navbatda kutayotganlar</span>
-            <span class="s2-drop-n tabnum" id="waitTotal">0</span>
-          </summary>
-          <div class="s2-queues" id="queues"></div>
-        </details>
-
-        <!-- Xizmat turlari (sozlash) -->
-        <details class="s2-drop" id="svcDrop">
-          <summary>
-            <span class="s2-sum-left">Xizmat turlarim</span>
-            <span class="s2-drop-hint" id="svcSummary">Hammasi</span>
-          </summary>
-          <div class="s2-checks" id="svcChecks"></div>
-        </details>
       </section>
     </div>
 
