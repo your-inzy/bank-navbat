@@ -97,12 +97,12 @@ Any operator can serve any service type. Each staff panel:
   operator's "Keyingisini chaqirish" draws from.
 - **Navbatda kutayotganlar** — live count broken down by service type.
 
-### Estimated wait
+### Queue position
 
-`peopleAhead × avgServiceMinutes ÷ onlineOperatorsForThatService`
-
-`avgServiceMinutes` starts at 5 and is recomputed from a rolling sample of actual
-handling times (clamped to 2–20 min).
+The customer's ticket screen shows their **position** and how many people are
+**ahead of them** (`peopleAhead`), updated live — no minute-based estimate.
+The server still tracks average handling time (`avgServiceMin`, a rolling sample
+clamped to 2–20 min) for the TV footer and the admin dashboard.
 
 ## How to add operators or service types
 

@@ -129,22 +129,6 @@ window.Navbat = (function () {
     return data;
   }
 
-  /** Kutish vaqtini o'zbekcha matnга aylantirish. */
-  function waitText(etaMin, peopleAhead) {
-    if (peopleAhead === 0) return 'Siz keyingisiz';
-    if (!etaMin || etaMin < 1) return '1 daqiqadan kam';
-    return '~' + etaMin + ' daqiqa';
-  }
-
-  function plural(n, one, many) {
-    return n === 1 ? one : many;
-  }
-
-  /** "3 kishi" kabi. */
-  function peopleText(n) {
-    return n + ' kishi';
-  }
-
   const WEEKDAYS = [
     'Yakshanba',
     'Dushanba',
@@ -256,9 +240,6 @@ window.Navbat = (function () {
   return {
     connect: connect,
     post: post,
-    waitText: waitText,
-    peopleText: peopleText,
-    plural: plural,
     fmtClock: fmtClock,
     fmtDate: fmtDate,
     elapsed: elapsed,

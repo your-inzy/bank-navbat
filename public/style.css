@@ -456,30 +456,32 @@ body.tv {
   padding-bottom: 10px;
 }
 .tv-head .title {
-  font-size: 2.4rem;
+  font-size: 3.1rem;
   font-weight: 800;
   display: flex;
-  gap: 14px;
+  gap: 16px;
   align-items: center;
 }
 .tv-head .title .brand-logo {
-  width: 60px;
-  height: 60px;
-  border-radius: 13px;
-  padding: 5px;
+  width: 76px;
+  height: 76px;
+  border-radius: 15px;
+  padding: 6px;
 }
 .tv-head .right {
   display: flex;
   align-items: center;
-  gap: 22px;
+  gap: 24px;
 }
 .tv-head .clock {
-  font-size: 2.1rem;
+  font-size: 3rem;
+  font-weight: 700;
   font-variant-numeric: tabular-nums;
   text-align: right;
+  line-height: 1.1;
 }
 .tv-head .date {
-  font-size: 1.25rem;
+  font-size: 1.5rem;
   opacity: 0.72;
   text-align: right;
 }
@@ -661,6 +663,7 @@ body.tv {
   display: flex;
   flex-direction: column;
   min-height: 0;
+  overflow: hidden;
 }
 .waiting-panel h2 {
   font-size: 1.7rem;
@@ -673,6 +676,8 @@ body.tv {
   display: flex;
   flex-direction: column;
   gap: 10px;
+  flex: 1;
+  min-height: 0;
   overflow: hidden;
 }
 .wait-item {
@@ -740,6 +745,26 @@ body.tv {
   }
   .op-cell .op-code {
     font-size: 2.7rem;
+  }
+}
+
+/* Short screens (laptop preview) — keep the big header from crowding the body */
+@media (max-height: 850px) {
+  .tv-head .title {
+    font-size: 2.3rem;
+  }
+  .tv-head .title .brand-logo {
+    width: 56px;
+    height: 56px;
+  }
+  .tv-head .clock {
+    font-size: 2.2rem;
+  }
+  .tv-head .date {
+    font-size: 1.15rem;
+  }
+  .wait-item .wi-code {
+    font-size: 2.1rem;
   }
 }
 

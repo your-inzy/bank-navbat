@@ -78,7 +78,7 @@
         serviceIcon: t.serviceIcon,
         serviceColor: t.serviceColor,
       };
-      showTicket(t.position, t.peopleAhead, t.etaMin, null);
+      showTicket(t.position, t.peopleAhead, null);
     } catch (err) {
       alert('Xatolik: ' + err.message);
     } finally {
@@ -88,7 +88,7 @@
     }
   }
 
-  function showTicket(position, peopleAhead, etaMin, calledOperator) {
+  function showTicket(position, peopleAhead, calledOperator) {
     screenSelect.hidden = true;
     screenTicket.hidden = false;
 
@@ -108,7 +108,7 @@
       calledBox.hidden = true;
       active.hidden = false;
       $('tPos').textContent = position + '-oʻrin';
-      $('tWait').textContent = Navbat.waitText(etaMin, peopleAhead);
+      $('tAhead').textContent = peopleAhead;
       var svc = svcOf(lastView, myTicket.serviceId);
       $('tPeople').textContent =
         'Bu xizmatda navbatda kutayotganlar: ' + (svc ? svc.waiting : peopleAhead + 1);
@@ -128,12 +128,6 @@
       return s.id === id;
     });
   }
-  function serversFor(view, id) {
-    var n = ((view && view.operators) || []).filter(function (o) {
-      return o.online && o.serviceIds.indexOf(id) !== -1;
-    }).length;
-    return Math.max(1, n);
-  }
 
   // ---- Live updates ----
   function onState(view) {
@@ -150,7 +144,7 @@
       return b.ticketCode === myTicket.code;
     });
     if (calledRow) {
-      showTicket(0, 0, 0, calledRow.id);
+      showTicket(0, 0, calledRow.id);
       return;
     }
 
@@ -170,10 +164,7 @@
       ahead = Math.max(ahead, svc.waiting - 1);
     }
     if (ahead < 0) ahead = 0;
-
-    var avg = (view.stats && view.stats.avgServiceMin) || 5;
-    var etaMin = Math.round((ahead / serversFor(view, myTicket.serviceId)) * avg);
-    showTicket(ahead + 1, ahead, etaMin, null);
+    showTicket(ahead + 1, ahead, null);
   }
 
   function onConn(online) {
