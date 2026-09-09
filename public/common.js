@@ -129,11 +129,6 @@ window.Navbat = (function () {
     return data;
   }
 
-  /** "A012" -> "A 0 1 2" (ovozli e'lon uchun). */
-  function spellCode(code) {
-    return String(code).split('').join(' ');
-  }
-
   /** Kutish vaqtini o'zbekcha matnга aylantirish. */
   function waitText(etaMin, peopleAhead) {
     if (peopleAhead === 0) return 'Siz keyingisiz';
@@ -200,120 +195,59 @@ window.Navbat = (function () {
     return m + ':' + String(r).padStart(2, '0');
   }
 
-  /** Ikki tonli "ding-dong" signali (audio fayl kerak emas). */
-  function chime() {
-    try {
-      const Ctx = window.AudioContext || window.webkitAudioContext;
-      if (!Ctx) return;
-      const ctx = chime._ctx || (chime._ctx = new Ctx());
-      if (ctx.state === 'suspended') ctx.resume();
-      const now = ctx.currentTime;
-      const notes = [
-        { f: 880, t: 0 },
-        { f: 1174, t: 0.18 },
-        { f: 1567, t: 0.36 },
-      ];
-      notes.forEach(function (n) {
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
-        osc.type = 'sine';
-        osc.frequency.value = n.f;
-        gain.gain.setValueAtTime(0.0001, now + n.t);
-        gain.gain.exponentialRampToValueAtTime(0.35, now + n.t + 0.02);
-        gain.gain.exponentialRampToValueAtTime(0.0001, now + n.t + 0.5);
-        osc.connect(gain).connect(ctx.destination);
-        osc.start(now + n.t);
-        osc.stop(now + n.t + 0.55);
-      });
-    } catch (e) {
-      /* ignore */
-    }
+  // --- Notification sounds (WebAudio, no audio files needed) -----------------
+
+  function audioCtx() {
+    const Ctx = window.AudioContext || window.webkitAudioContext;
+    if (!Ctx) return null;
+    const ctx = audioCtx._ctx || (audioCtx._ctx = new Ctx());
+    if (ctx.state === 'suspended') ctx.resume();
+    return ctx;
   }
 
-  // --- Speech synthesis -------------------------------------------------------
-
-  // Named voice to grab first: Microsoft Madina, the uz-UZ online neural voice
-  // available in Microsoft Edge. Everything below is only a safety net so the
-  // announcement is never silent if Madina is missing (e.g. opened in Chrome).
-  const VOICE_NAME_PREF = [/madina/i];
-
-  // Languages whose voices pronounce Uzbek (Latin) acceptably, best first.
-  // Turkic languages (tr / az / kk …) share the sound system and Latin
-  // orthography, so they read Uzbek far better than ru/en fallbacks.
-  const VOICE_LANG_PREF = ['uz', 'tr', 'az', 'kk', 'ky', 'tk', 'ru', 'en'];
-
-  let voiceCache = [];
-  function refreshVoices() {
-    try {
-      voiceCache = window.speechSynthesis.getVoices() || [];
-    } catch (e) {
-      voiceCache = [];
-    }
-    return voiceCache;
-  }
-  if ('speechSynthesis' in window) {
-    refreshVoices();
-    try {
-      window.speechSynthesis.addEventListener('voiceschanged', refreshVoices);
-    } catch (e) {
-      /* older engines */
-    }
-  }
-
-  function langRank(v) {
-    const l = (v.lang || '').toLowerCase().slice(0, 2);
-    const i = VOICE_LANG_PREF.indexOf(l);
-    return i === -1 ? 99 : i;
-  }
-
-  /** All installed voices, Turkic/Uzbek-friendly ones first. */
-  function listVoices() {
-    return refreshVoices()
-      .slice()
-      .sort((a, b) => langRank(a) - langRank(b) || (a.name < b.name ? -1 : 1));
-  }
-
-  function pickVoice(preferred) {
-    const vs = refreshVoices();
-    if (!vs.length) return null;
-    if (preferred) {
-      const hit = vs.find((v) => v.voiceURI === preferred || v.name === preferred);
-      if (hit) return hit;
-    }
-    // "Automatic": Microsoft Madina / Sardor (uz-UZ) if present …
-    for (const rx of VOICE_NAME_PREF) {
-      const hit = vs.find((v) => rx.test(v.name || ''));
-      if (hit) return hit;
-    }
-    // … otherwise the best available language match.
-    for (const code of VOICE_LANG_PREF) {
-      const hit = vs.find((v) => (v.lang || '').toLowerCase().slice(0, 2) === code);
-      if (hit) return hit;
-    }
-    return vs[0] || null;
+  /** One bell-like tone with a few harmonics and a soft decay. */
+  function bell(ctx, freq, start, dur, level, dest) {
+    [1, 2, 3].forEach(function (h, i) {
+      const osc = ctx.createOscillator();
+      const g = ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.value = freq * h;
+      const peak = level / (i + 1.4);
+      g.gain.setValueAtTime(0.0001, start);
+      g.gain.exponentialRampToValueAtTime(peak, start + 0.012);
+      g.gain.exponentialRampToValueAtTime(0.0001, start + dur);
+      osc.connect(g).connect(dest);
+      osc.start(start);
+      osc.stop(start + dur + 0.05);
+    });
   }
 
   /**
-   * Speak a phrase.
-   * @param {string} text
-   * @param {{voiceURI?: string, rate?: number, pitch?: number}} [opts]
+   * Play a notification sound.
+   * @param {'call'|'recall'|'ticket'} [kind]  defaults to 'call'
    */
-  function speak(text, opts) {
+  function chime(kind) {
     try {
-      if (!('speechSynthesis' in window)) return;
-      opts = opts || {};
-      const u = new SpeechSynthesisUtterance(text);
-      const v = pickVoice(opts.voiceURI);
-      if (v) {
-        u.voice = v;
-        u.lang = v.lang;
+      const ctx = audioCtx();
+      if (!ctx) return;
+      const t = ctx.currentTime;
+      const master = ctx.createGain();
+      master.gain.value = 0.55;
+      master.connect(ctx.destination);
+
+      if (kind === 'ticket') {
+        // short, quiet single blip — a ticket was issued
+        bell(ctx, 1318, t, 0.35, 0.22, master);
+      } else if (kind === 'recall') {
+        // urgent triple — customer is being called again
+        bell(ctx, 784, t, 0.55, 0.4, master);
+        bell(ctx, 784, t + 0.22, 0.55, 0.4, master);
+        bell(ctx, 1046, t + 0.44, 0.8, 0.4, master);
       } else {
-        u.lang = 'uz-UZ';
+        // default "call": classic two-tone PA chime, bing – bong
+        bell(ctx, 659.25, t, 1.1, 0.42, master); // E5
+        bell(ctx, 523.25, t + 0.42, 1.4, 0.42, master); // C5
       }
-      u.rate = opts.rate || 0.9;
-      u.pitch = opts.pitch == null ? 1 : opts.pitch;
-      window.speechSynthesis.cancel();
-      window.speechSynthesis.speak(u);
     } catch (e) {
       /* ignore */
     }
@@ -322,7 +256,6 @@ window.Navbat = (function () {
   return {
     connect: connect,
     post: post,
-    spellCode: spellCode,
     waitText: waitText,
     peopleText: peopleText,
     plural: plural,
@@ -330,8 +263,5 @@ window.Navbat = (function () {
     fmtDate: fmtDate,
     elapsed: elapsed,
     chime: chime,
-    speak: speak,
-    listVoices: listVoices,
-    pickVoice: pickVoice,
   };
 })();

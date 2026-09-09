@@ -10,7 +10,6 @@
   };
 
   var soundOn = localStorage.getItem('tvSound') !== 'off';
-  var voiceURI = localStorage.getItem('tvVoiceURI') || '';
   var lastSeq = null;
   var initialised = false;
 
@@ -19,67 +18,16 @@
     soundOn = !soundOn;
     localStorage.setItem('tvSound', soundOn ? 'on' : 'off');
     updateSoundBtn();
-    if (soundOn) Navbat.chime(); // user gesture — unlocks audio + speech
+    if (soundOn) Navbat.chime(); // user gesture — unlocks WebAudio
   });
   function updateSoundBtn() {
-    $('soundToggle').textContent = soundOn ? '🔊 Ovoz: yoniq' : '🔇 Ovoz: oʻchiq';
+    $('soundToggle').textContent = soundOn ? '🔊 Signal: yoniq' : '🔇 Signal: oʻchiq';
   }
 
-  // ---- Announcement voice (Madina only) ----
-  function buildVoiceList() {
-    var sel = $('voiceSelect');
-    var madinas = Navbat.listVoices().filter(function (v) {
-      return /madina/i.test(v.name || '');
-    });
-    sel.length = 0;
-
-    if (madinas.length) {
-      madinas.forEach(function (v) {
-        var o = document.createElement('option');
-        o.value = v.voiceURI;
-        o.textContent = 'Madina (' + v.lang + ')';
-        sel.appendChild(o);
-      });
-      voiceURI = madinas[0].voiceURI;
-      sel.value = voiceURI;
-      sel.disabled = false;
-      localStorage.setItem('tvVoiceURI', voiceURI);
-    } else {
-      var o = document.createElement('option');
-      o.value = '';
-      o.textContent = 'Madina ovozi yoʻq — Edge brauzerida oching';
-      sel.appendChild(o);
-      sel.disabled = true;
-      voiceURI = ''; // speak() falls back so it is never silent
-    }
-  }
-  buildVoiceList();
-  if ('speechSynthesis' in window) {
-    try {
-      window.speechSynthesis.addEventListener('voiceschanged', buildVoiceList);
-    } catch (e) {
-      /* ignore */
-    }
-  }
-  // Voices often load a beat after page load.
-  setTimeout(buildVoiceList, 400);
-  setTimeout(buildVoiceList, 1500);
-
-  $('voiceSelect').addEventListener('change', function () {
-    voiceURI = this.value;
-    localStorage.setItem('tvVoiceURI', voiceURI);
-    sampleSpeak();
+  // Test button — plays the call signal
+  $('soundTest').addEventListener('click', function () {
+    Navbat.chime('call');
   });
-  $('voiceTest').addEventListener('click', sampleSpeak);
-
-  function sampleSpeak() {
-    Navbat.chime();
-    setTimeout(function () {
-      Navbat.speak('Navbat raqami A 100. Uch raqamli operatorga murojaat qiling.', {
-        voiceURI: voiceURI,
-      });
-    }, 700);
-  }
 
   // ---- Clock ----
   function tickClock() {
@@ -92,18 +40,7 @@
 
   // ---- Announcement ----
   function announce(call) {
-    if (soundOn) {
-      Navbat.chime();
-      var text =
-        'Navbat raqami ' +
-        call.code +
-        '. ' +
-        call.operatorId +
-        '-operatorga murojaat qiling.';
-      setTimeout(function () {
-        Navbat.speak(text, { voiceURI: voiceURI });
-      }, 950);
-    }
+    if (soundOn) Navbat.chime(call.recall ? 'recall' : 'call');
     var hl = $('headline');
     hl.classList.remove('flash');
     void hl.offsetWidth;
@@ -217,10 +154,6 @@
 
   function onConn(online) {
     $('offline').classList.toggle('show', !online);
-  }
-
-  if ('speechSynthesis' in window) {
-    window.speechSynthesis.onvoiceschanged = function () {};
   }
 
   Navbat.connect(render, onConn);

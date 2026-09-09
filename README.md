@@ -47,11 +47,11 @@ bank-navbat/
   public/
     index.html         hub with links to every view
     kiosk.html/.js      customer kiosk (mobile-first)
-    tv.html/.js         TV display (6 operators, chime + Uzbek TTS)
+    tv.html/.js         TV display (6 operators, notification sounds)
     staff.html/.js      operator panel
     qr.html/.js         printable QR poster
     admin.html/.js      admin dashboard
-    common.js           SSE client, chime (WebAudio), speech, formatting
+    common.js           SSE client, notification sounds (WebAudio), formatting
     style.css           all styles (system font stack renders oʻ / gʻ / ʼ cleanly)
   data/state.json       queue state, written on every change (auto-created)
 ```
@@ -88,7 +88,7 @@ Any operator can serve any service type. Each staff panel:
   (FIFO across queues). Shortcut: <kbd>Space</kbd>.
 - **Muayyan navbatdan chaqirish** — per-queue buttons to pull specifically from
   one service queue.
-- **Qayta chaqirish** — re-announces the current number on the TV (chime + voice).
+- **Qayta chaqirish** — re-alerts the current number on the TV (urgent triple-tone signal).
 - **Oʻtkazib yuborish** — marks the current customer as a no-show and pulls the next
   one (from the same queue, falling back to auto).
 - **Operator dam olishda** — pause/resume; a paused operator is removed from the
@@ -142,7 +142,8 @@ start online.
 
 - **Admin dashboard** (`/admin`) — tickets issued/served today, no-shows, average
   wait & handling time per service type, busiest service type. Labels in Uzbek.
-- **Uzbek text-to-speech** on the TV when a number is called
-  ("A086 raqami, 5-operatorga murojaat qiling") plus a two-tone chime, with an
-  on-screen **Ovoz: yoniq / oʻchiq** toggle.
+- **Notification sounds** on the TV when a number is called — a two-tone PA chime
+  for a normal call, an urgent triple-tone for a recall — generated with WebAudio
+  (no audio files), with an on-screen **Signal: yoniq / oʻchiq** toggle and a test
+  button.
 - **Pause/resume an operator** ("Operator dam olishda").
