@@ -937,6 +937,20 @@ body.staff {
   color: var(--muted);
   font-size: 1.05rem;
 }
+.s2-cancel {
+  margin-top: 14px;
+  background: transparent;
+  color: var(--danger-dark);
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+}
+.s2-cancel:hover:not(:disabled) {
+  background: #fdecec;
+  border-color: var(--danger);
+}
 
 /* primary action */
 .s2-call {
@@ -1260,7 +1274,7 @@ body.admin {
 table.admin-table {
   width: 100%;
   border-collapse: collapse;
-  min-width: 640px;
+  min-width: 760px;
 }
 table.admin-table th,
 table.admin-table td {
@@ -1292,6 +1306,94 @@ table.admin-table .swatch {
   height: 12px;
   border-radius: 3px;
 }
+.admin-queue {
+  margin-top: 22px;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 20px;
+}
+.admin-queue h2 {
+  font-size: 1.05rem;
+  margin: 0 0 4px;
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.admin-queue h2 #qCount {
+  background: var(--blue-soft);
+  color: var(--blue-dark);
+  border-radius: 999px;
+  padding: 1px 10px;
+  font-size: 0.95rem;
+  font-weight: 800;
+}
+.admin-queue .q-sub {
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--muted);
+}
+.admin-queue .q-hint {
+  color: var(--muted);
+  font-size: 0.88rem;
+  margin: 0 0 14px;
+}
+.q-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-height: 420px;
+  overflow-y: auto;
+}
+.q-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 8px;
+  border-top: 1px solid var(--line);
+}
+.q-row .q-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  flex: none;
+}
+.q-row .q-code {
+  font-weight: 800;
+  font-size: 1.05rem;
+  min-width: 58px;
+}
+.q-row .q-svc {
+  flex: 1;
+  min-width: 0;
+  color: var(--ink);
+  font-size: 0.92rem;
+}
+.q-row .q-wait {
+  color: var(--muted);
+  font-size: 0.82rem;
+  white-space: nowrap;
+}
+.q-row .q-cancel {
+  background: #fff;
+  border: 1px solid var(--danger);
+  color: var(--danger-dark);
+  font-weight: 700;
+  font-size: 0.85rem;
+  padding: 7px 13px;
+  border-radius: 8px;
+  white-space: nowrap;
+}
+.q-row .q-cancel:hover:not(:disabled) {
+  background: #fdecec;
+}
+.q-empty {
+  color: var(--muted);
+  padding: 14px 4px;
+}
+
 .admin-actions {
   margin-top: 20px;
   display: flex;

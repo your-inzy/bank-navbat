@@ -73,6 +73,8 @@
         );
       } else if (url === '/api/recall') {
         toast(res.recalled ? 'Qayta chaqirildi: ' + res.recalled.code : 'Qayta chaqirish uchun mijoz yoʻq');
+      } else if (url === '/api/cancel') {
+        toast('Chipta bekor qilindi: ' + (res.ticket && res.ticket.code));
       }
     } catch (err) {
       toast('Xatolik: ' + err.message);
@@ -90,6 +92,12 @@
   });
   $('btnSkip').addEventListener('click', function () {
     action('/api/skip');
+  });
+  $('btnCancel').addEventListener('click', function () {
+    var me = lastView && myOp(lastView);
+    if (!me || !me.current) return;
+    if (!confirm(me.current.code + ' chiptasini butunlay bekor qilasizmi?')) return;
+    action('/api/cancel', { code: me.current.code });
   });
 
   $('statusToggle').addEventListener('click', function () {
@@ -113,6 +121,7 @@
     $('btnCall').disabled = v;
     $('btnRecall').disabled = v;
     $('btnSkip').disabled = v;
+    $('btnCancel').disabled = v;
     $('queues')
       .querySelectorAll('button')
       .forEach(function (b) {

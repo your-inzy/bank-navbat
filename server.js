@@ -426,6 +426,22 @@ function updateOperator(operatorId, patch) {
   return { operator: op };
 }
 
+/** Remove an unwanted ticket (junk, duplicate, test). Not a no-show. */
+function cancelTicket(code) {
+  checkRollover();
+  const t = state.tickets.find(
+    (x) => x.code === code && (x.status === 'waiting' || x.status === 'called')
+  );
+  if (!t) throw new HttpError(404, 'Chipta topilmadi yoki allaqachon yakunlangan');
+  t.status = 'cancelled';
+  t.endedAt = Date.now();
+  // If an operator is currently on this ticket, free them.
+  for (const op of state.operators) {
+    if (op.currentTicketId === t.id) op.currentTicketId = null;
+  }
+  return { ticket: t };
+}
+
 // ---------------------------------------------------------------------------
 // View model — one payload for every client
 // ---------------------------------------------------------------------------
@@ -452,6 +468,7 @@ function serviceReport(s) {
     issued: ts.length,
     served: served.length,
     noShow: noShow.length,
+    cancelled: ts.filter((t) => t.status === 'cancelled').length,
     waiting: ts.filter((t) => t.status === 'waiting').length,
     avgWaitMin: Math.round(avg(waitDur)),
     avgServeMin: Math.round(avg(serveDur)),
@@ -489,19 +506,21 @@ function buildView() {
     };
   });
 
-  const waitingList = waitingTickets(null)
-    .slice(0, 8)
-    .map((t) => {
-      const m = serviceMeta(t.serviceId);
-      return {
-        code: t.code,
-        serviceId: t.serviceId,
-        serviceName: m.name,
-        serviceIcon: m.icon,
-        serviceColor: m.color,
-        createdAt: t.createdAt,
-      };
-    });
+  const waitingSorted = waitingTickets(null);
+  const mapWaiting = (t) => {
+    const m = serviceMeta(t.serviceId);
+    return {
+      code: t.code,
+      serviceId: t.serviceId,
+      serviceName: m.name,
+      serviceIcon: m.icon,
+      serviceColor: m.color,
+      createdAt: t.createdAt,
+    };
+  };
+  const waitingList = waitingSorted.slice(0, 8).map(mapWaiting);
+  // Full waiting queue for the admin cancel UI — capped for payload size.
+  const fullQueue = waitingSorted.slice(0, 120).map(mapWaiting);
 
   const operators = state.operators.map((o) => {
     const cur = o.currentTicketId ? getTicket(o.currentTicketId) : null;
@@ -558,12 +577,14 @@ function buildView() {
     services,
     board,
     waitingList,
+    queue: fullQueue,
     operators,
     lastCall,
     stats: {
       issued: state.tickets.length,
       served: state.tickets.filter((t) => t.status === 'served').length,
       noShow: state.tickets.filter((t) => t.status === 'no_show').length,
+      cancelled: state.tickets.filter((t) => t.status === 'cancelled').length,
       waiting: state.tickets.filter((t) => t.status === 'waiting').length,
       avgServiceMin: Math.round(avgServiceMin()),
     },
@@ -701,6 +722,9 @@ const MIME = {
   '.jpg': 'image/jpeg',
   '.jpeg': 'image/jpeg',
   '.webp': 'image/webp',
+  '.mp3': 'audio/mpeg',
+  '.wav': 'audio/wav',
+  '.ogg': 'audio/ogg',
   '.woff2': 'font/woff2',
 };
 
@@ -814,6 +838,12 @@ const API_HANDLERS = {
       ok: true,
       operator: { id: operator.id, online: operator.online, serviceIds: operator.serviceIds },
     };
+  },
+
+  'POST /api/cancel': async (body) => {
+    const { ticket } = cancelTicket(String(body.code || '').trim());
+    commit();
+    return { ok: true, ticket: { code: ticket.code } };
   },
 
   'POST /api/reset': async () => {

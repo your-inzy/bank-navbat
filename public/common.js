@@ -179,31 +179,66 @@ window.Navbat = (function () {
     return m + ':' + String(r).padStart(2, '0');
   }
 
-  // --- Notification sounds (WebAudio, no audio files needed) -----------------
+  // --- Notification sound ----------------------------------------------------
+  // Plays /audio/notify.mp3. Falls back to a synthesised bell if the file
+  // can't be loaded or played. Needs one user gesture first to unlock audio
+  // (the TV's Signal / Sinash button provides it).
 
-  function audioCtx() {
-    const Ctx = window.AudioContext || window.webkitAudioContext;
-    if (!Ctx) return null;
-    const ctx = audioCtx._ctx || (audioCtx._ctx = new Ctx());
-    if (ctx.state === 'suspended') ctx.resume();
-    return ctx;
+  const NOTIFY_SRC = '/audio/notify.mp3';
+  let notifyEl = null;
+  function notifyAudio() {
+    if (!notifyEl) {
+      notifyEl = new Audio(NOTIFY_SRC);
+      notifyEl.preload = 'auto';
+    }
+    return notifyEl;
   }
 
-  /** One bell-like tone with a few harmonics and a soft decay. */
-  function bell(ctx, freq, start, dur, level, dest) {
-    [1, 2, 3].forEach(function (h, i) {
-      const osc = ctx.createOscillator();
-      const g = ctx.createGain();
-      osc.type = 'sine';
-      osc.frequency.value = freq * h;
-      const peak = level / (i + 1.4);
-      g.gain.setValueAtTime(0.0001, start);
-      g.gain.exponentialRampToValueAtTime(peak, start + 0.012);
-      g.gain.exponentialRampToValueAtTime(0.0001, start + dur);
-      osc.connect(g).connect(dest);
-      osc.start(start);
-      osc.stop(start + dur + 0.05);
-    });
+  function playFile(volume) {
+    const a = notifyAudio();
+    a.pause();
+    a.currentTime = 0;
+    a.volume = volume;
+    const p = a.play();
+    if (p && typeof p.catch === 'function') p.catch(function () {});
+    return p;
+  }
+
+  function synthBell(kind) {
+    try {
+      const Ctx = window.AudioContext || window.webkitAudioContext;
+      if (!Ctx) return;
+      const ctx = synthBell._ctx || (synthBell._ctx = new Ctx());
+      if (ctx.state === 'suspended') ctx.resume();
+      const t = ctx.currentTime;
+      const master = ctx.createGain();
+      master.gain.value = 0.5;
+      master.connect(ctx.destination);
+      const tone = function (freq, start, dur, level) {
+        [1, 2, 3].forEach(function (h, i) {
+          const osc = ctx.createOscillator();
+          const g = ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.value = freq * h;
+          g.gain.setValueAtTime(0.0001, start);
+          g.gain.exponentialRampToValueAtTime(level / (i + 1.4), start + 0.012);
+          g.gain.exponentialRampToValueAtTime(0.0001, start + dur);
+          osc.connect(g).connect(master);
+          osc.start(start);
+          osc.stop(start + dur + 0.05);
+        });
+      };
+      if (kind === 'recall') {
+        tone(784, t, 0.5, 0.4);
+        tone(784, t + 0.22, 0.5, 0.4);
+        tone(1046, t + 0.44, 0.8, 0.4);
+      } else {
+        tone(659.25, t, 1.1, 0.42);
+        tone(523.25, t + 0.42, 1.4, 0.42);
+      }
+    } catch (e) {
+      /* ignore */
+    }
   }
 
   /**
@@ -212,28 +247,28 @@ window.Navbat = (function () {
    */
   function chime(kind) {
     try {
-      const ctx = audioCtx();
-      if (!ctx) return;
-      const t = ctx.currentTime;
-      const master = ctx.createGain();
-      master.gain.value = 0.55;
-      master.connect(ctx.destination);
-
-      if (kind === 'ticket') {
-        // short, quiet single blip — a ticket was issued
-        bell(ctx, 1318, t, 0.35, 0.22, master);
-      } else if (kind === 'recall') {
-        // urgent triple — customer is being called again
-        bell(ctx, 784, t, 0.55, 0.4, master);
-        bell(ctx, 784, t + 0.22, 0.55, 0.4, master);
-        bell(ctx, 1046, t + 0.44, 0.8, 0.4, master);
-      } else {
-        // default "call": classic two-tone PA chime, bing – bong
-        bell(ctx, 659.25, t, 1.1, 0.42, master); // E5
-        bell(ctx, 523.25, t + 0.42, 1.4, 0.42, master); // C5
+      const vol = kind === 'ticket' ? 0.5 : 1;
+      const p = playFile(vol);
+      if (p && typeof p.then === 'function') {
+        p.then(null, function () {
+          synthBell(kind);
+        });
+      }
+      // recall: play it twice so it clearly differs from a first call
+      if (kind === 'recall') {
+        setTimeout(function () {
+          try {
+            const b = notifyAudio().cloneNode(true);
+            b.volume = 1;
+            const bp = b.play();
+            if (bp && bp.catch) bp.catch(function () {});
+          } catch (e) {
+            /* ignore */
+          }
+        }, 650);
       }
     } catch (e) {
-      /* ignore */
+      synthBell(kind);
     }
   }
 

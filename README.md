@@ -91,6 +91,9 @@ Any operator can serve any service type. Each staff panel:
 - **Qayta chaqirish** — re-alerts the current number on the TV (urgent triple-tone signal).
 - **Oʻtkazib yuborish** — marks the current customer as a no-show and pulls the next
   one (from the same queue, falling back to auto).
+- **Chiptani bekor qilish** — removes the current ticket entirely (junk / duplicate /
+  test), separate from a no-show. The admin panel (`/admin`) can cancel *any* waiting
+  ticket from a live list.
 - **Operator dam olishda** — pause/resume; a paused operator is removed from the
   wait-time estimate and shown as "dam olishda" on the TV.
 - **Men xizmat koʻrsatadigan turlar** — checkboxes to choose which queues this
@@ -136,14 +139,15 @@ start online.
 | `POST /api/recall` | `{ operatorId }` | re-announce current ticket |
 | `POST /api/skip` | `{ operatorId }` | no-show current, call next |
 | `POST /api/operator` | `{ operatorId, online?, serviceIds? }` | pause/resume, set queues |
+| `POST /api/cancel` | `{ code }` | remove an unwanted ticket (staff: current; admin: any waiting one) |
 | `POST /api/reset` | — | reset all queues for the day |
 
 ## Stretch goals included
 
 - **Admin dashboard** (`/admin`) — tickets issued/served today, no-shows, average
   wait & handling time per service type, busiest service type. Labels in Uzbek.
-- **Notification sounds** on the TV when a number is called — a two-tone PA chime
-  for a normal call, an urgent triple-tone for a recall — generated with WebAudio
-  (no audio files), with an on-screen **Signal: yoniq / oʻchiq** toggle and a test
-  button.
+- **Notification sound** on the TV when a number is called — plays
+  `public/audio/notify.mp3` (played twice for a recall), falling back to a
+  synthesised bell if the file can't load. On-screen **Signal: yoniq / oʻchiq**
+  toggle and a test button. Swap the sound by replacing `notify.mp3`.
 - **Pause/resume an operator** ("Operator dam olishda").
